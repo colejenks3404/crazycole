@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - Crazy Cole</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            padding: 20px;
+        }
+        .page-title {
+            color: darkblue;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 36px;
+            text-align: center;
+        }
+        .back-link {
+            display: block;
+            margin: 20px 0;
+            color: darkblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .content {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            background: black;
+            border: 2px solid lime;
+        }
+        .controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #score {
+            text-align: center;
+            color: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back Home</a>
+    <h1 class="page-title">GAMES</h1>
+    <div class="content">
+        <h2>Snake Game</h2>
+        <canvas id="game" width="400" height="400"></canvas>
+
+        <div class="controls">
+          <button onclick="startGame()">▶️ Play</button>
+          <button onclick="restartGame()">🔄 Restart</button>
+        </div>
+
+        <p id="score">Score: 0</p>
+
+        <script>
+        const canvas = document.getElementById("game");
+        const ctx = canvas.getContext("2d");
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        let snake, velocity, food, score, gameState;
+
+        function init() {
+          snake = [{x: 10, y: 10}];
+          velocity = {x: 0, y: 0};
+          food = randomFood();
+          score = 0;
+          gameState = "menu";
+          updateScore();
+          draw();
+        }
+
+        function randomFood() {
+          return {
+            x: Math.floor(Math.random() * tileCount),
+            y: Math.floor(Math.random() * tileCount)
+          };
+        }
+
+        function startGame() {
+          if (gameState !== "playing") {
+            velocity = {x: 1, y: 0};
+            gameState = "playing";
+            gameLoop();
+          }
+        }
+
+        function restartGame() {
+          init();
+        }
+
+        document.addEventListener("keydown", changeDirection);
+
+        function changeDirection(e) {
+          if (gameState !== "playing") return;
+
+          const key = e.key.toLowerCase();
+
+          // Up: ArrowUp or W
+          if (key === "arrowup" || key === "w") {
+            if (velocity.y === 1) return;
+            velocity = {x: 0, y: -1};
+          }
+
+          // Down: ArrowDown or S
+          else if (key === "arrowdown" || key === "s") {
+            if (velocity.y === -1) return;
+            velocity = {x: 0, y: 1};
+          }
+
+          // Left: ArrowLeft or A
+          else if (key === "arrowleft" || key === "a") {
+            if (velocity.x === 1) return;
+            velocity = {x: -1, y: 0};
+          }
+
+          // Right: ArrowRight or D
+          else if (key === "arrowright" || key === "d") {
+            if (velocity.x === -1) return;
+            velocity = {x: 1, y: 0};
+          }
+        }
+
+        function gameLoop() {
+          if (gameState !== "playing") return;
+
+          setTimeout(() => {
+            update();
+            draw();
+            gameLoop();
+          }, 100);
+        }
+
+        function update() {
+          const head = {
+            x: snake[0].x + velocity.x,
+            y: snake[0].y + velocity.y
+          };
+
+          if (
+            head.x < 0 || head.x >= tileCount ||
+            head.y < 0 || head.y >= tileCount
+          ) {
+            gameState = "gameover";
+            return;
+          }
+
+          for (let part of snake) {
+            if (part.x === head.x && part.y === head.y) {
+              gameState = "gameover";
+              return;
+            }
+          }
+
+          snake.unshift(head);
+
+          if (head.x === food.x && head.y === food.y) {
+            score++;
+            updateScore();
+            food = randomFood();
+          } else {
+            snake.pop();
+          }
+        }
+
+        function updateScore() {
+          document.getElementById("score").innerText = "Score: " + score;
+        }
+
+        function draw() {
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = "lime";
+          snake.forEach(part => {
+            ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+          });
+
+          ctx.fillStyle = "red";
+          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
+
+          if (gameState === "menu") {
+            drawText("Press Play");
+          } else if (gameState === "gameover") {
+            drawText("Game Over");
+          }
+        }
+
+        function drawText(text) {
+          ctx.fillStyle = "white";
+          ctx.font = "28px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        }
+
+        init();
+        </script>
+    </div>
+</body>
+</html>

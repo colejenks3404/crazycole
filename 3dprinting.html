@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Printing - Crazy Cole</title>
+    <style>
+        .main-title {
+            color: darkblue;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 48px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        nav {
+            text-align: center;
+            margin: 30px 0;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 18px;
+        }
+        nav a {
+            color: darkblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            max-width: 800px;
+            margin: 40px auto;
+            font-family: 'Helvetica Neue', sans-serif;
+            color: darkblue;
+        }
+        form {
+            background-color: #f0f0f0;
+            padding: 30px;
+            border-radius: 10px;
+            font-family: Calibri, sans-serif;
+        }
+        form h2 {
+            color: darkblue;
+            text-align: center;
+        }
+        form label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+            color: darkblue;
+        }
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="file"],
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid darkblue;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: Calibri, sans-serif;
+        }
+        form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        form button {
+            background-color: darkblue;
+            color: white;
+            padding: 12px 30px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Calibri, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        form button:hover {
+            background-color: #00008b;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="main-title">3D PRINTING</h1>
+    <nav>
+        <a href="index.html">← Back Home</a>
+    </nav>
+    <div class="content">
+        <form onsubmit="handleSubmit(event)">
+            <h2>Order a 3D Print!</h2>
+            
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="item">What would you like to print?</label>
+            <textarea id="item" name="item" required></textarea>
+            
+            <label for="dimensions">Dimensions:</label>
+            <textarea id="dimensions" name="dimensions" placeholder="e.g., Length: 10cm, Width: 5cm, Height: 3cm"></textarea>
+            
+            <button type="submit">Submit Your Order</button>
+        </form>
+        
+        <script>
+            function handleSubmit(event) {
+                event.preventDefault();
+                window.location.href = 'thankyou.html';
+            }
+        </script>
+    </div>
+</body>
+</html>

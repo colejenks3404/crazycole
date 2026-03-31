@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography - Crazy Cole</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            padding: 20px;
+            background-color: lightyellow;
+        }
+        .page-title {
+            color: darkblue;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 36px;
+            text-align: center;
+        }
+        .back-link {
+            display: block;
+            margin: 20px 0;
+            color: darkblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back Home</a>
+    <h1 class="page-title">PHOTOGRAPHY</h1>
+    <div class="content">
+        <p>Check out my photography portfolio!</p>
+        
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="images/beach1.jpg" alt="Beach with waves">
+            </div>
+            <div class="gallery-item">
+                <img src="images/bridge.jpg" alt="Bridge over water">
+            </div>
+            <div class="gallery-item">
+                <img src="images/ocean-waves.jpg" alt="Ocean waves">
+            </div>
+            <div class="gallery-item">
+                <img src="images/beach-sunset.jpg" alt="Beach at sunset">
+            </div>
+            <div class="gallery-item">
+                <img src="images/boats-sunset.jpg" alt="Boats at sunset">
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img id="modalImage" src="" alt="Preview">
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeBtn = document.querySelector('.modal-close');
+        const galleryImages = document.querySelectorAll('.gallery-item img');
+
+        // Open modal when image is clicked
+        galleryImages.forEach(img => {
+            img.addEventListener('click', function() {
+                modal.classList.add('show');
+                modalImage.src = this.src;
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal when X is clicked
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
