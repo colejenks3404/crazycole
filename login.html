@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Crazy Cole</title>
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: 'Comic Sans MS', cursive;
+            color: darkblue;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid darkblue;
+            border-radius: 5px;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        button {
+            background-color: darkblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #000080;
+        }
+        .switch {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .switch a {
+            color: darkblue;
+            text-decoration: none;
+        }
+        .switch a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login to Crazy Cole</h1>
+        
+        <form id="loginForm">
+            <h2>Login</h2>
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="username" required>
+            
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+        
+        <div class="switch">
+            Don't have an account? <a href="#signup">Create one here</a>
+        </div>
+        
+        <form id="signupForm" style="display: none;">
+            <h2>Create Account</h2>
+            <label for="signupUsername">Username:</label>
+            <input type="text" id="signupUsername" name="username" required>
+            
+            <label for="signupEmail">Email:</label>
+            <input type="email" id="signupEmail" name="email" required>
+            
+            <label for="signupPassword">Password:</label>
+            <input type="password" id="signupPassword" name="password" required>
+            
+            <button type="submit">Create Account</button>
+        </form>
+        
+        <div class="switch" style="display: none;" id="backToLogin">
+            Already have an account? <a href="#login">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const switchToSignup = document.querySelector('.switch a[href="#signup"]');
+        const switchToLogin = document.getElementById('backToLogin').querySelector('a');
+
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            document.querySelector('.switch').style.display = 'none';
+            document.getElementById('backToLogin').style.display = 'block';
+        });
+
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            document.getElementById('backToLogin').style.display = 'none';
+            document.querySelector('.switch').style.display = 'block';
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            if (username) {
+                localStorage.setItem('currentUser', username);
+                alert('Logged in as ' + username + '!');
+                window.location.href = 'index.html';
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signupUsername').value.trim();
+            if (username) {
+                localStorage.setItem('currentUser', username);
+                alert('Account created and logged in as ' + username + '!');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+
+
+
+</body>
+</html>

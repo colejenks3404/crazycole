@@ -22,13 +22,22 @@
             font-size: 18px;
         }
         nav a {
-            margin: 0 20px;
+            margin: 0 10px;
+            padding: 10px 18px;
             color: darkblue;
             text-decoration: none;
+            font-family: Helvetica, 'Arial', sans-serif;
             font-weight: bold;
+            background: linear-gradient(to bottom, #e0f4ff, #b6e4ff);
+            border: 2px solid #66b3ff;
+            border-radius: 999px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
         }
         nav a:hover {
-            text-decoration: underline;
+            background: linear-gradient(to bottom, #c8ebff, #8ed8ff);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
         }
     </style>
 </head>
@@ -37,15 +46,167 @@
     <nav>
         <a href="contact.html">Contact</a>
         <a href="photography.html">Photography</a>
-        <a href="sourdough.html">Sourdough</a>
         <a href="tech.html">Tech</a>
         <a href="blog.html">Blog</a>
         <a href="games.html">Games</a>
         <a href="3dprinting.html">3D Printing</a>
         <a href="petpics.html">Pet Pics</a>
+        <a href="login.html">Login</a>
     </nav>
     <p style="text-align: center; font-family: 'Helvetica Neue', sans-serif; font-size: 18px; color: darkblue; margin: 40px 20px; font-weight: 900;">
         Hi! Welcome to my website! Its mainly about my interests! While your here, feel free to read my blog! Don't forget to check out my other pages, too!!!
     </p>
+    <div style="display: flex; align-items: flex-start; justify-content: flex-start; margin: 40px 0 40px 20px;">
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+            <img src="images/harriet.jpg" alt="Harriet" style="width: 200px; height: auto; margin-bottom: 20px;">
+            <div id="comments-section">
+                <h3 style="font-size: 18px; color: darkblue; margin: 0 0 10px 0;">Comments</h3>
+                <textarea id="comment-input" placeholder="Leave a comment about Harriet..." style="width: 200px; height: 80px; font-family: Helvetica, sans-serif; font-size: 14px; color: darkblue; padding: 8px; border: 2px solid #66b3ff; border-radius: 8px; resize: vertical;"></textarea>
+                <br>
+                <button id="submit-comment" style="margin-top: 8px; padding: 8px 16px; background: linear-gradient(to bottom, #e0f4ff, #b6e4ff); border: 2px solid #66b3ff; border-radius: 999px; color: darkblue; font-weight: bold; cursor: pointer; font-family: Helvetica, sans-serif;">Submit Comment</button>
+                <div id="comments-list" style="margin-top: 15px; max-width: 200px;"></div>
+            </div>
+        </div>
+        <div>
+            <h2 style="font-size: 24px; color: darkblue;">Today's featured Pet</h2>
+            <p style="font-size: 16px; color: darkblue;">Harriet</p>
+        </div>
+    </div>
+
+</xai:function_call > 
+```
+
+<xai:function_call name="edit_file">
+<parameter name="path">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const commentInput = document.getElementById('comment-input');
+            const submitBtn = document.getElementById('submit-comment');
+            const commentsList = document.getElementById('comments-list');
+            const currentUser = localStorage.getItem('currentUser');
+
+            if (!currentUser) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Login to comment';
+                commentInput.placeholder = 'Please login to comment';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Comment';
+                commentInput.placeholder = 'Leave a comment about Harriet...';
+            }
+
+            // Generate unique ID
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            // Load comments data
+            function loadComments() {
+                const commentsData = JSON.parse(localStorage.getItem('harrietCommentsData') || '[]');
+                commentsList.innerHTML = '';
+                renderComments(commentsData, null);
+            }
+
+            function renderComments(comments, parentId) {
+                comments.filter(c => c.parentId === parentId).forEach(function(comment) {
+                    const commentDiv = document.createElement('div');
+                    commentDiv.style = 'background: rgba(255,255,255,0.7); padding: 12px; margin-bottom: 10px; border-radius: 8px; font-size: 14px; color: darkblue; border-left: 4px solid #66b3ff; position: relative; margin-left: ' + (comment.parentId ? '20px' : '0') + ';';
+                    
+                    const usernameSpan = document.createElement('strong');
+                    usernameSpan.style.color = 'navy';
+                    usernameSpan.textContent = comment.username + ': ';
+                    commentDiv.appendChild(usernameSpan);
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = comment.text;
+                    commentDiv.appendChild(textSpan);
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.style.marginTop = '8px';
+                    
+                    const likesBtn = document.createElement('button');
+                    likesBtn.textContent = '👍 ' + (comment.likes || 0);
+                    likesBtn.style.marginRight = '10px';
+                    likesBtn.style.border = 'none';
+                    likesBtn.style.background = 'none';
+                    likesBtn.style.cursor = 'pointer';
+                    likesBtn.style.color = 'darkblue';
+                    likesBtn.style.fontSize = '14px';
+                    likesBtn.onclick = () => handleLike(comment.id);
+                    actionsDiv.appendChild(likesBtn);
+                    
+                    const replyBtn = document.createElement('button');
+                    replyBtn.textContent = 'Reply';
+                    replyBtn.style.border = 'none';
+                    replyBtn.style.background = 'none';
+                    replyBtn.style.cursor = 'pointer';
+                    replyBtn.style.color = 'darkblue';
+                    replyBtn.style.fontSize = '14px';
+                    replyBtn.onclick = () => handleReply(comment.id);
+                    actionsDiv.appendChild(replyBtn);
+                    
+                    commentDiv.appendChild(actionsDiv);
+                    commentsList.appendChild(commentDiv);
+                    
+                    renderComments(commentsData, comment.id); // Recursive replies
+                });
+            }
+
+            function handleLike(commentId) {
+                const commentsData = JSON.parse(localStorage.getItem('harrietCommentsData') || '[]');
+                const comment = commentsData.find(c => c.id === commentId);
+                if (comment) {
+                    comment.likes = (comment.likes || 0) + 1;
+                    localStorage.setItem('harrietCommentsData', JSON.stringify(commentsData));
+                    loadComments();
+                }
+            }
+
+            function handleReply(parentId) {
+                const replyText = prompt('Your reply:');
+                if (replyText && currentUser) {
+                    const commentsData = JSON.parse(localStorage.getItem('harrietCommentsData') || '[]');
+                    const newComment = {
+                        id: generateId(),
+                        username: currentUser,
+                        text: replyText,
+                        parentId: parentId,
+                        likes: 0
+                    };
+                    commentsData.push(newComment);
+                    localStorage.setItem('harrietCommentsData', JSON.stringify(commentsData));
+                    loadComments();
+                } else if (!currentUser) {
+                    alert('Please login to reply');
+                }
+            }
+
+            // Submit comment
+            submitBtn.addEventListener('click', function() {
+                const text = commentInput.value.trim();
+                if (text && currentUser) {
+                    const commentsData = JSON.parse(localStorage.getItem('harrietCommentsData') || '[]');
+                    const newComment = {
+                        id: generateId(),
+                        username: currentUser,
+                        text: text,
+                        parentId: null,
+                        likes: 0
+                    };
+                    commentsData.unshift(newComment);
+                    localStorage.setItem('harrietCommentsData', JSON.stringify(commentsData));
+                    commentInput.value = '';
+                    loadComments();
+                } else if (!currentUser) {
+                    alert('Please login to comment!');
+                }
+            });
+
+            // Load on start
+            loadComments();
+        });
+    </script>
+
 </body>
+
 </html>
