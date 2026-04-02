@@ -108,6 +108,7 @@
         const signupForm = document.getElementById('signupForm');
         const switchToSignup = document.querySelector('.switch a[href="#signup"]');
         const switchToLogin = document.getElementById('backToLogin').querySelector('a');
+        const API_BASE = '';
 
         switchToSignup.addEventListener('click', (e) => {
             e.preventDefault();
@@ -125,24 +126,86 @@
             document.querySelector('.switch').style.display = 'block';
         });
 
-        loginForm.addEventListener('submit', (e) => {
+        async function tryServerLogin(username, password) {
+            try {
+                const res = await fetch(API_BASE + '/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function tryServerSignup(username, email, password) {
+            try {
+                const res = await fetch(API_BASE + '/signup', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, email, password})
+                });
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                return null;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
-            if (username) {
+            const password = document.getElementById('loginPassword').value;
+            if (!username) return;
+
+            const serverResp = await tryServerLogin(username, password);
+            if (serverResp && serverResp.success) {
                 localStorage.setItem('currentUser', username);
                 alert('Logged in as ' + username + '!');
                 window.location.href = 'index.html';
+                return;
             }
+
+            // Fallback: allow local login if username exists in localStorage users
+            const localUsers = JSON.parse(localStorage.getItem('localUsers') || '{}');
+            if (localUsers[username]) {
+                localStorage.setItem('currentUser', username);
+                alert('Logged in locally as ' + username + '!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            alert('Login failed. Check credentials or sign up.');
         });
 
-        signupForm.addEventListener('submit', (e) => {
+        signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('signupUsername').value.trim();
-            if (username) {
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            if (!username) return;
+
+            const serverResp = await tryServerSignup(username, email, password);
+            if (serverResp && serverResp.success) {
                 localStorage.setItem('currentUser', username);
                 alert('Account created and logged in as ' + username + '!');
                 window.location.href = 'index.html';
+                return;
             }
+
+            // Fallback: save to localUsers
+            const localUsers = JSON.parse(localStorage.getItem('localUsers') || '{}');
+            if (localUsers[username]) {
+                alert('Username already exists locally. Choose another.');
+                return;
+            }
+            localUsers[username] = {email, password};
+            localStorage.setItem('localUsers', JSON.stringify(localUsers));
+            localStorage.setItem('currentUser', username);
+            alert('Account created locally and logged in as ' + username + '!');
+            window.location.href = 'index.html';
         });
     </script>
 
